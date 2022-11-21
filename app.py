@@ -31,6 +31,7 @@ def verify(cnpj):
 
 @app.route('/upload', methods=['POST'])
 def fileUpload():
-    f = request.files['file']  
-    f.save(f"./data/upload/{f.filename}") 
-    return "done"
+    f = request.files['file']
+    path = f"./data/upload/{f.filename}"
+    f.save(path) 
+    return {"path": path}
