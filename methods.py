@@ -56,7 +56,7 @@ def list_filtered(cnpj, month, year):
 
   return filtered_nfs
 
-def get_aliquotas_values(ncm):
+def get_aliquotas_value(ncm):
   if ncm_db[f"{ncm}"]:
     return ncm_db[f"{ncm}"]
   else:
