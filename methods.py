@@ -69,7 +69,7 @@ def get_some_value(ncm):
       return (ncm_db, 2)
     return (ncm_db[ncm], None)
   else:
-    return 17
+    return (17, None)
 
 def verify_efd(cnpj, efd):
   efd_array = read_efd(efd)
