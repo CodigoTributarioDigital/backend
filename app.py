@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, flash, request, redirect, url_for, session
 from werkzeug.utils import secure_filename
 from flask_cors import CORS, cross_origin
-from methods import list_filtered, get_some_value, verify_efd
+from methods import list_filtered, get_some_value, verify_efd, pgda_calculator
 import os
 
 app = Flask(__name__)
@@ -35,3 +35,7 @@ def fileUpload():
     path = f"./data/upload/{f.filename}"
     f.save(path) 
     return {"path": path}
+
+@app.route('/pgda/<cnpj>', methods=["POST"])
+def calculate(cnpj):
+    return pgda_calculator(cnpj)

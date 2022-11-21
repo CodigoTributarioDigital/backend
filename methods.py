@@ -101,24 +101,51 @@ def verify_efd(cnpj, efd):
 
 def pgda_calculator(cnpj):
   xml = list_by_cnpj(cnpj)
+
   total_i1 = 0
   total_i2_i3 = 0
+
+  i1 = []
+  i2 = []
+  i3 = []
+
   for nf in xml:
-
-    t = nf.infNFe.det
-
-    for i in t:
+    products = nf.infNFe.det
+    for value in products:
       
-      if i.prod.CFOP in output_nf:
-         total_i1+=float(i.prod.vProd)
+      if value.prod.CFOP in output_nf:
+        total_i1+=float(value.prod.vProd)
+        aux = {"key":nf.infNFe.Id,
+                "type":nf.infNFe.ide.mod,
+                "date":nf.infNFe.ide.dhEmi, 
+                "emit":nf.infNFe.emit.xNome, 
+                "dest":nf.infNFe.dest.xNome, 
+                "value":nf.infNFe.total.ICMSTot.vNF}
+        i1.append(aux)
 
-      elif i.prod.CFOP in devolution_nf:
-         total_i2_i3+=float(i.prod.vProd)
+      elif value.prod.CFOP in devolution_nf:
+        total_i2_i3+=float(value.prod.vProd)
+        aux = {"key":nf.infNFe.Id,
+                "type":nf.infNFe.ide.mod,
+                "date":nf.infNFe.ide.dhEmi, 
+                "emit":nf.infNFe.emit.xNome, 
+                "dest":nf.infNFe.dest.xNome, 
+                "value":nf.infNFe.total.ICMSTot.vNF}
+        i2.append(aux)
 
-      elif i.prod.CFOP in input_nf:
-         total_i2_i3+=float(i.prod.vProd)
+      elif value.prod.CFOP in input_nf:
+        total_i2_i3+=float(value.prod.vProd)
+        aux = {"key":nf.infNFe.Id,
+                "type":nf.infNFe.ide.mod,
+                "date":nf.infNFe.ide.dhEmi, 
+                "emit":nf.infNFe.emit.xNome, 
+                "dest":nf.infNFe.dest.xNome, 
+                "value":nf.infNFe.total.ICMSTot.vNF}
+        i3.append(aux)
+  
+  total = total_i1 - total_i2_i3
 
-  return total_i1 - total_i2_i3
+  return {"total": total, "i1": i1, "i2": i2, "i3": i3 }
 
 
 print(pgda_calculator('42602001413603'))
