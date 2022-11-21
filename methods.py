@@ -1,4 +1,5 @@
 from nfelib.v4_00 import leiauteNFe_sub as parser
+from data.ncm import ncm_db
 import os
 
 # Retorna um xml
@@ -39,7 +40,6 @@ def list_by_cnpj(cnpj):
 
   return validated_nf
 
-
 def list_filtered(cnpj, month, year):
   validated_nf = list_by_cnpj(cnpj)
   filtered_nfs=[]
@@ -56,6 +56,8 @@ def list_filtered(cnpj, month, year):
 
   return filtered_nfs
 
-
-
-print(list_filtered("42602001413603","01","2022"))
+def get_aliquotas_values(ncm):
+  if ncm_db[f"{ncm}"]:
+    return ncm_db[f"{ncm}"]
+  else:
+    return 17
