@@ -1,5 +1,6 @@
 from nfelib.v4_00 import leiauteNFe_sub as parser
 from data.ncm import ncm_db, fecoep
+from data.cfop import output_nf, devolution_nf, input_nf
 import os
 
 def remove_items(test_list, item):
@@ -97,4 +98,27 @@ def verify_efd(cnpj, efd):
       miss.append(value)
   
   return miss
+
+def pgda_calculator(cnpj):
+  xml = list_by_cnpj(cnpj)
+  total_i1 = 0
+  total_i2_i3 = 0
+  for nf in xml:
+
+    t = nf.infNFe.det
+
+    for i in t:
       
+      if i.prod.CFOP in output_nf:
+         total_i1+=float(i.prod.vProd)
+
+      elif i.prod.CFOP in devolution_nf:
+         total_i2_i3+=float(i.prod.vProd)
+
+      elif i.prod.CFOP in input_nf:
+         total_i2_i3+=float(i.prod.vProd)
+
+  return total_i1 - total_i2_i3
+
+
+print(pgda_calculator('42602001413603'))
