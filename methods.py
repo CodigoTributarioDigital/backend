@@ -1,10 +1,16 @@
 from nfelib.v4_00 import leiauteNFe_sub as parser
-from data.ncm import ncm_db
+from data.ncm import ncm_db, fecoep
 import os
+
+def remove_items(test_list, item):
+    # using list comprehension to perform the task
+    res = [i for i in test_list if i != item]
+ 
+    return res
 
 # Retorna um xml
 def read_xml(path):
-  return parser.parse(path)
+  return parser.parse(path, silence=True)
 
 # Retorna um array onde cada elemento é um xml
 # Usar paths diferentes para pegar os dois datasets
@@ -24,31 +30,32 @@ def read_efd(path):
 
 # Retorna um array com xmls relacionados ao cnpj informado
 def list_by_cnpj(cnpj):
-  nfe_path = "./data/nfe"
-  nfc_path = "./data/nfc"
+  nfe_path = "./data/big_nfe"
+  nfc_path = "./data/big_nfc"
   validated_nf = []
   nfes = read_xml_folder(nfe_path)
   nfcs = read_xml_folder(nfc_path)
 
   for xml in nfes:
     if xml.infNFe.emit.CNPJ == cnpj:
-      validated_nf.append(nfes)
+      validated_nf.append(xml)
 
   for xml in nfcs:
     if xml.infNFe.emit.CNPJ == cnpj:
-      validated_nf.append(nfcs)
+      validated_nf.append(xml)
 
   return validated_nf
 
 def list_filtered(cnpj, month, year):
   validated_nf = list_by_cnpj(cnpj)
   filtered_nfs=[]
-  for xml in validated_nf[0]:
+  for xml in validated_nf:
     xml_date = xml.infNFe.ide.dhEmi
     
     if year == xml_date[:4] and month == xml_date[5:7]:
       aux = {"key":xml.infNFe.Id,
-             "date": xml_date, 
+             "type":xml.infNFe.ide.mod,
+             "date":xml_date, 
              "emit":xml.infNFe.emit.xNome, 
              "dest":xml.infNFe.dest.xNome, 
              "value":xml.infNFe.total.ICMSTot.vNF}
@@ -56,8 +63,38 @@ def list_filtered(cnpj, month, year):
 
   return filtered_nfs
 
-def get_aliquotas_value(ncm):
-  if ncm_db[f"{ncm}"]:
-    return ncm_db[f"{ncm}"]
+def get_some_value(ncm):
+  if ncm_db[ncm]:
+    if ncm_db[ncm] in fecoep:
+      return (ncm_db, 2)
+    return (ncm_db[ncm], None)
   else:
     return 17
+
+def verify_efd(cnpj, efd):
+  efd_array = read_efd(efd)
+
+  access_codes = []
+  for value in efd_array:
+    actual_line = value.split('|')
+    actual_line = remove_items(actual_line, '')
+    actual_line = remove_items(actual_line, '\n')
+    
+    # print(actual_line)
+    if actual_line[0] == "C100":
+      access_codes.append(actual_line[8])
+    if actual_line[0] == "0000":
+      month = actual_line[3][2:4]
+      year = actual_line[3][4:8]
+
+  filtered = list_filtered(cnpj, month, year)
+  
+  miss = []
+
+  for value in filtered:
+    value["key"] = value["key"].replace("NFe","")
+    if value["key"] not in access_codes:
+      miss.append(value)
+  
+  return miss
+      
