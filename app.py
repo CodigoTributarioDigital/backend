@@ -36,6 +36,6 @@ def fileUpload():
     f.save(path) 
     return {"path": path}
 
-@app.route('/pgda/<cnpj>', methods=["POST"])
+@app.route('/pgda/<cnpj>', methods=['GET'])
 def calculate(cnpj):
     return pgda_calculator(cnpj)
