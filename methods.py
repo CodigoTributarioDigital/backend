@@ -43,7 +43,7 @@ def list_by_cnpj(cnpj):
 def list_filtered(cnpj, month, year):
   validated_nf = list_by_cnpj(cnpj)
   filtered_nfs=[]
-  for xml in validated_nf:
+  for xml in validated_nf[0]:
     xml_date = xml.infNFe.ide.dhEmi
     
     if year == xml_date[:4] and month == xml_date[5:7]:
@@ -51,7 +51,11 @@ def list_filtered(cnpj, month, year):
              "date": xml_date, 
              "emit":xml.infNFe.emit.xNome, 
              "dest":xml.infNFe.dest.xNome, 
-             "value":xml.infNFe.total.vNF}
+             "value":xml.infNFe.total.ICMSTot.vNF}
       filtered_nfs.append(aux)
 
   return filtered_nfs
+
+
+
+print(list_filtered("42602001413603","01","2022"))
