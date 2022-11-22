@@ -8,10 +8,6 @@ app = Flask(__name__)
 
 CORS(app)
 
-@app.route('/', methods=['GET'])
-def hello():
-    return 'Hello World!'
-
 @app.route('/list/<cnpj>/<month>/<year>', methods=['GET'])
 def list_nf(cnpj, month, year): 
     return list_filtered(cnpj, month, year)
@@ -41,3 +37,6 @@ def calculate(cnpj):
     request_data = request.get_json()
     year_income = request_data["year_income"]
     return pgda_calculator(cnpj,year_income)
+
+if __name__ == '__main__':
+    app.run()
