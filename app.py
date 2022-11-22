@@ -40,4 +40,4 @@ def fileUpload():
 def calculate(cnpj):
     request_data = request.get_json()
     year_income = request_data["year_income"]
-    return pgda_calculator(cnpj)
+    return pgda_calculator(cnpj,year_income)

@@ -157,7 +157,7 @@ def pgda_calculator(cnpj, year_income):
   effective_some = ((year_income * nominal_some) - pd)/year_income
 
   final_value = monthly_income * effective_some
-
+  response = {}
   if tribute_range == 1:
     response = {"final_value": final_value, 
               "monthly_income": monthly_income, 
