@@ -101,22 +101,22 @@ def verify_efd(cnpj, efd):
 
 def generate_some(year_income):
   if year_income <= 180000:
-    return (4.0,0)
+    return (4.0,0,1)
 
   elif year_income >= 180000.01 and year_income<=360000:
-    return (7.30, 5940)
+    return (7.30, 5940,2)
 
   elif year_income >= 360000.01 and year_income <= 720000:
-    return (9.5,13860)
+    return (9.5,13860,3)
 
   elif year_income >= 720000.01 and year_income <= 1800000:
-    return (10.7,22500)
+    return (10.7,22500,4)
 
   elif year_income >= 1800000.01 and year_income <= 3600000:
-    return (14.3,87300)
+    return (14.3,87300,5)
 
   elif year_income >= 3600000.01 and year_income <= 4800000:
-    return (19,378000)
+    return (19,378000,6)
 
 
 def pgda_calculator(cnpj, year_income):
@@ -152,12 +152,13 @@ def pgda_calculator(cnpj, year_income):
     
   monthly_income = total_nat + total_ext
 
-  nominal_some, pd = generate_some(year_income)
+  nominal_some, pd, tribute_range = generate_some(year_income)
 
   effective_some = ((year_income * nominal_some) - pd)/year_income
 
   final_value = monthly_income * effective_some
   response = {}
+
   if tribute_range == 1:
     response = {"final_value": final_value, 
               "monthly_income": monthly_income, 
@@ -269,10 +270,8 @@ def pgda_calculator(cnpj, year_income):
               "ICMS_value": final_value*0.335,
               "tribute_range":tribute_range
               }    
-  
+
   return response
-
-
 
 
 
