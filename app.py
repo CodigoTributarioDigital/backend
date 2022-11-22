@@ -36,6 +36,8 @@ def fileUpload():
     f.save(path) 
     return {"path": path}
 
-@app.route('/pgda/<cnpj>', methods=['GET'])
+@app.route('/pgda/<cnpj>', methods=['POST'])
 def calculate(cnpj):
+    request_data = request.get_json()
+    year_income = request_data["year_income"]
     return pgda_calculator(cnpj)
